@@ -1,0 +1,32 @@
+
+### LIST USERS
+GET http://localhost:3000/users
+
+---
+
+### CREATE FRIEND REQUEST 
+POST http://localhost:3000/friend-request
+Content-Type: application/json
+
+{
+    "senderId": 4,
+    "receiverId": 6
+}
+
+### GET PENDING FRIEND REQUESTS
+GET http://localhost:3000/friend-request/pending/6
+
+### ACCEPT A FRIEND REQUEST 
+PATCH http://localhost:3000/friend-request/accept/4
+Content-Type: application/json
+
+
+### REJECT A FRIEND REQUEST 
+PATCH http://localhost:3000/friend-request/reject/1
+Content-Type: application/json
+
+---
+
+
+### GET MY FRIENDS
+GET http://localhost:3000/friendships/me/5
