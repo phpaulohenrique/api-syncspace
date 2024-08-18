@@ -7,6 +7,22 @@ import { FriendRequestStatus } from '@prisma/client';
 export class FriendRequestService {
   constructor(private readonly prisma: PrismaService) {}
   async create(body: CreateFriendRequestDto) {
+    if (body.receiverId === body.senderId) {
+      throw new BadRequestException(
+        'User cannot send a friend request to yourself',
+      );
+    }
+
+    const friendRequestExists = await this.prisma.friendRequest.findFirst({
+      where: {
+        AND: [{ senderId: body.senderId }, { receiverId: body.receiverId }],
+      },
+    });
+
+    if (friendRequestExists) {
+      throw new BadRequestException('Friend request already exists');
+    }
+
     const sender = await this.prisma.user.findUnique({
       where: {
         id: body.senderId,

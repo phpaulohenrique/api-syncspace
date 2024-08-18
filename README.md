@@ -1,73 +1,83 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Requisitos da API de Amizades
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Visão Geral
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Esta API permite a gestão de usuários, solicitações de amizade e relacionamentos de amizade. As principais funcionalidades incluem criação de usuários, envio e gestão de solicitações de amizade, e gerenciamento de amizades confirmadas.
 
-## Description
+## Modelos
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### 1. Users
 
-## Installation
+**Campos:**
+- `id`: Identificador único do usuário (UUID ou número inteiro).
+- `name`: Nome do usuário (string, obrigatório).
+- `email`: Email do usuário (string, único, obrigatório).
+- `createdAt`: Data de criação do usuário (timestamp).
+- `updatedAt`: Data de atualização do usuário (timestamp).
 
-```bash
-$ pnpm install
-```
+**Endpoints:**
+- `GET /users`: Lista todos os usuários.
+- `GET /users/:id`: Obtém um usuário específico pelo ID.
+- `POST /users`: Cria um novo usuário.
+- `PUT /users/:id`: Atualiza um usuário existente.
+- `DELETE /users/:id`: Remove um usuário.
 
-## Running the app
+### 2. FriendRequests
 
-```bash
-# development
-$ pnpm run start
+**Campos:**
+- `id`: Identificador único da solicitação de amizade (UUID ou número inteiro).
+- `senderId`: ID do usuário que enviou a solicitação (relacionamento com `Users`).
+- `receiverId`: ID do usuário que recebeu a solicitação (relacionamento com `Users`).
+- `status`: Status da solicitação (`PENDING`, `ACCEPTED`, `REJECTED`).
+- `createdAt`: Data de criação da solicitação (timestamp).
+- `updatedAt`: Data de atualização da solicitação (timestamp).
 
-# watch mode
-$ pnpm run start:dev
+**Endpoints:**
+- `GET /friend-requests`: Lista todas as solicitações de amizade.
+- `GET /friend-requests/:id`: Obtém uma solicitação de amizade específica pelo ID.
+- `POST /friend-requests`: Cria uma nova solicitação de amizade.
+- `PUT /friend-requests/:id`: Atualiza uma solicitação de amizade existente (pode ser para aceitar ou rejeitar).
+- `DELETE /friend-requests/:id`: Remove uma solicitação de amizade.
 
-# production mode
-$ pnpm run start:prod
-```
+### 3. Friendships
 
-## Test
+**Campos:**
+- `id`: Identificador único da amizade (UUID ou número inteiro).
+- `userIdInitiated`: ID do usuário que iniciou a amizade (relacionamento com `Users`).
+- `userIdReceived`: ID do usuário que recebeu a amizade (relacionamento com `Users`).
+- `createdAt`: Data de criação da amizade (timestamp).
 
-```bash
-# unit tests
-$ pnpm run test
+**Endpoints:**
+- `GET /friendships`: Lista todas as amizades.
+- `GET /friendships/:id`: Obtém uma amizade específica pelo ID.
+- `POST /friendships`: Cria uma nova amizade (somente após aceitar uma solicitação de amizade).
+- `DELETE /friendships/:id`: Remove uma amizade.
 
-# e2e tests
-$ pnpm run test:e2e
+## Funcionalidades
 
-# test coverage
-$ pnpm run test:cov
-```
+### 1. Gerenciamento de Usuários
 
-## Support
+- Criar, atualizar, listar e remover usuários.
+- Cada usuário deve ter um email único.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### 2. Solicitações de Amizade
 
-## Stay in touch
+- Enviar uma solicitação de amizade de um usuário para outro.
+- Listar todas as solicitações de amizade pendentes de um usuário.
+- Aceitar ou rejeitar solicitações de amizade.
+- Impedir que um usuário envie uma solicitação para si mesmo ou envie múltiplas solicitações pendentes para o mesmo usuário.
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### 3. Gerenciamento de Amizades
 
-## License
+- Converter uma solicitação de amizade aceita em uma amizade.
+- Listar todos os amigos de um usuário.
+- Remover uma amizade existente.
+- Garantir que uma amizade só pode existir entre dois usuários que tenham aceitado uma solicitação de amizade.
 
-Nest is [MIT licensed](LICENSE).
+## Regras de Negócio
+
+1. **Um usuário não pode enviar uma solicitação de amizade para si mesmo.**
+2. **Não pode haver mais de uma solicitação de amizade pendente entre dois usuários.**
+3. **Quando uma solicitação de amizade é aceita, ela deve ser removida da tabela `FriendRequests` e a amizade deve ser criada na tabela `Friendships`.**
+4. **Se uma solicitação de amizade for rejeitada, ela deve permanecer na tabela `FriendRequests` com o status `REJECTED`.**
+
