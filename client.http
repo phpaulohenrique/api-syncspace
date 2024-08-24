@@ -1,32 +1,37 @@
 
-### LIST USERS
-GET http://localhost:3000/users
+###
+# @name get_users
+GET http://localhost:3000/users/8
 
----
+###
+# @name get_user_friends
+GET http://localhost:3000/users/friends/8
 
-### CREATE FRIEND REQUEST 
+###
+# @name create_friend_request
 POST http://localhost:3000/friend-request
 Content-Type: application/json
 
 {
-    "senderId": 4,
-    "receiverId": 6
+    "senderId": 7,
+    "receiverId": 8
 }
 
-### GET PENDING FRIEND REQUESTS
-GET http://localhost:3000/friend-request/pending/6
+###
+# @name get_pending_friend_requests
+GET http://localhost:3000/friend-request/pending/8
 
-### ACCEPT A FRIEND REQUEST 
-PATCH http://localhost:3000/friend-request/accept/4
+###
+# @name accept_a_friend_request
+PATCH http://localhost:3000/friend-request/accept/8
 Content-Type: application/json
 
 
-### REJECT A FRIEND REQUEST 
-PATCH http://localhost:3000/friend-request/reject/1
+###
+# @name reject_a_friend_request
+PATCH http://localhost:3000/friend-request/reject/7
 Content-Type: application/json
 
----
-
-
-### GET MY FRIENDS
-GET http://localhost:3000/friendships/me/5
+###
+# @name get_my_friends
+GET http://localhost:3000/friendships/me/8

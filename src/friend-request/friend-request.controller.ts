@@ -1,14 +1,6 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
-  Patch,
-} from '@nestjs/common';
-import { FriendRequestService } from './friend-request.service';
-import { CreateFriendRequestDto } from './dto/create-friend-request.dto';
+import { Controller, Get, Post, Body, Param, Delete, Patch } from '@nestjs/common'
+import { FriendRequestService } from './friend-request.service'
+import { CreateFriendRequestDto } from './dto/create-friend-request.dto'
 
 @Controller('friend-request')
 export class FriendRequestController {
@@ -16,12 +8,12 @@ export class FriendRequestController {
 
   @Post()
   create(@Body() createFriendRequestDto: CreateFriendRequestDto) {
-    return this.friendRequestService.create(createFriendRequestDto);
+    return this.friendRequestService.create(createFriendRequestDto)
   }
 
   @Get('pending/:id')
   findPending(@Param('id') id: string) {
-    return this.friendRequestService.findAllPending(+id);
+    return this.friendRequestService.findAllPending(+id)
   }
 
   // @Get(':id')
@@ -31,16 +23,16 @@ export class FriendRequestController {
 
   @Patch('/accept/:id')
   updateToAccept(@Param('id') id: string) {
-    return this.friendRequestService.updateToAccepted(+id);
+    return this.friendRequestService.updateToAccepted(+id)
   }
 
   @Patch('/reject/:id')
   updateToRejected(@Param('id') id: string) {
-    return this.friendRequestService.updateToRejected(+id);
+    return this.friendRequestService.updateToRejected(+id)
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.friendRequestService.remove(+id);
+    return this.friendRequestService.remove(+id)
   }
 }

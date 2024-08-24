@@ -1,46 +1,44 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateFriendRequestDto } from './dto/create-friend-request.dto';
-import { PrismaService } from 'src/prisma.service';
-import { FriendRequestStatus } from '@prisma/client';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import { CreateFriendRequestDto } from './dto/create-friend-request.dto'
+import { PrismaService } from 'src/prisma.service'
+import { FriendRequestStatus } from '@prisma/client'
 
 @Injectable()
 export class FriendRequestService {
   constructor(private readonly prisma: PrismaService) {}
   async create(body: CreateFriendRequestDto) {
     if (body.receiverId === body.senderId) {
-      throw new BadRequestException(
-        'User cannot send a friend request to yourself',
-      );
+      throw new BadRequestException('User cannot send a friend request to yourself')
     }
 
     const friendRequestExists = await this.prisma.friendRequest.findFirst({
       where: {
         AND: [{ senderId: body.senderId }, { receiverId: body.receiverId }],
       },
-    });
+    })
 
     if (friendRequestExists) {
-      throw new BadRequestException('Friend request already exists');
+      throw new BadRequestException('Friend request already exists')
     }
 
     const sender = await this.prisma.user.findUnique({
       where: {
         id: body.senderId,
       },
-    });
+    })
 
     const receiver = await this.prisma.user.findUnique({
       where: {
         id: body.receiverId,
       },
-    });
+    })
 
     if (!sender) {
-      throw new BadRequestException('Sender not found');
+      throw new NotFoundException('SenderId not found')
     }
 
     if (!receiver) {
-      throw new BadRequestException('Receiver not found');
+      throw new NotFoundException('ReceiverId not found')
     }
 
     await this.prisma.friendRequest.create({
@@ -53,7 +51,7 @@ export class FriendRequestService {
       //   receiver: true,
       //   sender: true,
       // },
-    });
+    })
 
     // return friendRequest;
   }
@@ -78,36 +76,37 @@ export class FriendRequestService {
           },
         },
       },
-    });
+    })
     return {
       pending_requests: pendingRequests,
-    };
-    // return `This action returns all friendRequest` ;
+    }
   }
 
   async updateToAccepted(id: number) {
-    // TODO: verificar pelo token se quem esta disparando essa rota é o receiverID
-    const friendRequest = await this.prisma.friendRequest.update({
-      where: {
-        id,
-      },
-      data: {
-        status: 'ACCEPTED',
-      },
-      select: {
-        receiverId: true,
-        senderId: true,
-      },
-    });
+    // TODO: verificar pelo token se quem está disparando essa rota é o receiverId
 
-    await this.prisma.friendship.create({
-      data: {
-        userIdInitiated: friendRequest.senderId,
-        userIdReceived: friendRequest.receiverId,
-      },
-    });
+    try {
+      await this.prisma.$transaction(async (prisma) => {
+        const friendRequest = await prisma.friendRequest.findUnique({
+          where: { id },
+          select: { receiverId: true, senderId: true, id: true },
+        })
 
-    // return `This action updates a #${id} friendRequest`;
+        await prisma.friendship.create({
+          data: {
+            userIdInitiated: friendRequest.senderId,
+            userIdReceived: friendRequest.receiverId,
+          },
+        })
+
+        await prisma.friendRequest.delete({
+          where: { id: friendRequest.id },
+        })
+      })
+    } catch (error) {
+      console.error('Error processing friend accept:', error)
+      throw new Error('Unable to process the friend request')
+    }
   }
 
   async updateToRejected(id: number) {
@@ -119,12 +118,10 @@ export class FriendRequestService {
       data: {
         status: 'REJECTED',
       },
-    });
-
-    // return `This action updates a #${id} friendRequest`;
+    })
   }
 
   remove(id: number) {
-    return `This action removes a #${id} friendRequest`;
+    return `This action removes a #${id} friendRequest`
   }
 }

@@ -1,7 +1,7 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateFriendshipDto } from './dto/create-friendship.dto';
-import { UpdateFriendshipDto } from './dto/update-friendship.dto';
-import { PrismaService } from 'src/prisma.service';
+import { BadRequestException, Injectable } from '@nestjs/common'
+import { CreateFriendshipDto } from './dto/create-friendship.dto'
+import { UpdateFriendshipDto } from './dto/update-friendship.dto'
+import { PrismaService } from 'src/prisma.service'
 
 @Injectable()
 export class FriendshipsService {
@@ -19,10 +19,10 @@ export class FriendshipsService {
         name: true,
         email: true,
       },
-    });
+    })
 
     if (!user) {
-      throw new BadRequestException('User not found');
+      throw new BadRequestException('User not found')
     }
 
     const friendships = await this.prisma.friendship.findMany({
@@ -48,7 +48,7 @@ export class FriendshipsService {
       // select: {
       //   userIdInitiated:?
       // }
-    });
+    })
 
     const friends = friendships.map((friendship) =>
       friendship.userIdInitiated === userId
@@ -62,23 +62,23 @@ export class FriendshipsService {
             id: friendship.userInitiated.id,
             email: friendship.userInitiated.email,
           },
-    );
+    )
 
     return {
       user,
       friends,
-    };
+    }
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} friendship`;
+    return `This action returns a #${id} friendship`
   }
 
   update(id: number, updateFriendshipDto: UpdateFriendshipDto) {
-    return `This action updates a #${id} friendship`;
+    return `This action updates a #${id} friendship`
   }
 
   remove(id: number) {
-    return `This action removes a #${id} friendship`;
+    return `This action removes a #${id} friendship`
   }
 }

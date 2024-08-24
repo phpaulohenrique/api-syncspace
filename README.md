@@ -62,22 +62,22 @@ Esta API permite a gestão de usuários, solicitações de amizade e relacioname
 
 ### 2. Solicitações de Amizade
 
-- Enviar uma solicitação de amizade de um usuário para outro.
-- Listar todas as solicitações de amizade pendentes de um usuário.
-- Aceitar ou rejeitar solicitações de amizade.
-- Impedir que um usuário envie uma solicitação para si mesmo ou envie múltiplas solicitações pendentes para o mesmo usuário.
+[x] Enviar uma solicitação de amizade de um usuário para outro.
+[x] Listar todas as solicitações de amizade pendentes de um usuário.
+[x] Aceitar ou rejeitar solicitações de amizade.
+[x] Impedir que um usuário envie uma solicitação para si mesmo ou envie múltiplas solicitações pendentes para o mesmo usuário.
 
 ### 3. Gerenciamento de Amizades
 
-- Converter uma solicitação de amizade aceita em uma amizade.
-- Listar todos os amigos de um usuário.
+[x] Converter uma solicitação de amizade aceita em uma amizade.
+[x] Listar todos os amigos de um usuário.
 - Remover uma amizade existente.
-- Garantir que uma amizade só pode existir entre dois usuários que tenham aceitado uma solicitação de amizade.
+[x] Garantir que uma amizade só pode existir entre dois usuários que tenham aceitado uma solicitação de amizade.
 
 ## Regras de Negócio
 
-1. **Um usuário não pode enviar uma solicitação de amizade para si mesmo.**
-2. **Não pode haver mais de uma solicitação de amizade pendente entre dois usuários.**
-3. **Quando uma solicitação de amizade é aceita, ela deve ser removida da tabela `FriendRequests` e a amizade deve ser criada na tabela `Friendships`.**
-4. **Se uma solicitação de amizade for rejeitada, ela deve permanecer na tabela `FriendRequests` com o status `REJECTED`.**
+[x] **Um usuário não pode enviar uma solicitação de amizade para si mesmo.**
+[x] **Não pode haver mais de uma solicitação de amizade pendente entre dois usuários.**
+[x] **Quando uma solicitação de amizade é aceita, ela deve ser removida da tabela `FriendRequests` e a amizade deve ser criada na tabela `Friendships`.**
+[x] **Se uma solicitação de amizade for rejeitada, ela deve permanecer na tabela `FriendRequests` com o status `REJECTED`.**
 

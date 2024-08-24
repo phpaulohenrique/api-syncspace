@@ -34,8 +34,8 @@ model FriendRequest {
   createdAt DateTime            @default(now())
   updatedAt DateTime            @updatedAt
 
-  sender   User @relation("SentRequests", fields: [senderId], references: [id])
-  receiver User @relation("ReceivedRequests", fields: [receiverId], references: [id])
+  sender   User @relation("SentRequests", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("ReceivedRequests", fields: [receiverId], references: [id], onDelete: Cascade)
 
   @@unique([senderId, receiverId])
 }
@@ -46,8 +46,8 @@ model Friendship {
   userIdReceived  Int
   createdAt       DateTime @default(now())
 
-  userInitiated User @relation("FriendshipsInitiated", fields: [userIdInitiated], references: [id])
-  userReceived  User @relation("FriendshipsReceived", fields: [userIdReceived], references: [id])
+  userInitiated User @relation("FriendshipsInitiated", fields: [userIdInitiated], references: [id], onDelete: Cascade)
+  userReceived  User @relation("FriendshipsReceived", fields: [userIdReceived], references: [id], onDelete: Cascade)
 
   @@unique([userIdInitiated, userIdReceived])
 }
