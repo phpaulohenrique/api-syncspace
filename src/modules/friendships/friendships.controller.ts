@@ -1,16 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common'
+import { Controller, Get, Body, Patch, Param, Delete } from '@nestjs/common'
 import { FriendshipsService } from './friendships.service'
-import { CreateFriendshipDto } from './dto/create-friendship.dto'
 import { UpdateFriendshipDto } from './dto/update-friendship.dto'
 
 @Controller('friendships')
 export class FriendshipsController {
   constructor(private readonly friendshipsService: FriendshipsService) {}
-
-  // @Post()
-  // create(@Body() createFriendshipDto: CreateFriendshipDto) {
-  //   return this.friendshipsService.create(createFriendshipDto);
-  // }
 
   @Get('/me/:id')
   findMyFriends(@Param('id') id: string) {

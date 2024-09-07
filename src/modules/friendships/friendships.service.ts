@@ -1,5 +1,4 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
-import { CreateFriendshipDto } from './dto/create-friendship.dto'
 import { UpdateFriendshipDto } from './dto/update-friendship.dto'
 import { PrismaService } from 'src/prisma.service'
 

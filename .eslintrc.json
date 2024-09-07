@@ -1,6 +1,8 @@
 {
   "extends": ["@rocketseat/eslint-config/node"],
   "rules": {
+    "no-useless-constructor": "off",
+    "no-new": "off",
     "prettier/prettier": ["error", {
       "tabWidth": 2,
       "printWidth": 100,
