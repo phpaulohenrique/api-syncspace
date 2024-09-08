@@ -52,6 +52,16 @@ model Friendship {
   @@unique([userIdInitiated, userIdReceived])
 }
 
+
+model Chat{
+  id              Int      @id @default(autoincrement())
+
+}
+
+// model Message{
+
+// }
+
 enum FriendRequestStatus {
   PENDING
   ACCEPTED

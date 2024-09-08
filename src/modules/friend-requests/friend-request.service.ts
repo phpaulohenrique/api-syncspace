@@ -4,7 +4,7 @@ import { PrismaService } from 'src/prisma.service'
 import { FriendRequestStatus } from '@prisma/client'
 
 @Injectable()
-export class FriendRequestService {
+export class FriendRequestsService {
   constructor(private readonly prisma: PrismaService) {}
   async create(body: CreateFriendRequestDto) {
     if (body.receiverId === body.senderId) {
