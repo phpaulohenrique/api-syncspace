@@ -7,11 +7,18 @@ import { FriendshipsModule } from './modules/friendships/friendships.module'
 import { ChatsModule } from './modules/chats/chats.module'
 import { WebsocketModule } from './websocket/websocket.module'
 import { MongooseModule } from '@nestjs/mongoose'
+import { RedisModule } from '@liaoliaots/nestjs-redis'
 
 @Module({
   imports: [
-    // MongooseModule.forRoot('mongodb://mongo:docker@localhost:27017'),
     MongooseModule.forRoot(process.env.MONGODB_URL),
+    RedisModule.forRoot({
+      config: {
+        host: process.env.REDIS_HOST,
+        port: Number(process.env.REDIS_PORT),
+        password: process.env.REDIS_PASSWORD,
+      },
+    }),
     UsersModule,
     FriendRequestModule,
     FriendshipsModule,

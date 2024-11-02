@@ -6,53 +6,69 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { Message } from './schemas/message.schema'
 import { ChatGateway } from 'src/websocket/chat.gateway'
+import { RedisService } from '@liaoliaots/nestjs-redis'
+import Redis from 'ioredis'
 
 @Injectable()
 export class MessagesService {
+  private readonly redis: Redis | null
+
   constructor(
+    private readonly messagesGateway: ChatGateway,
     private readonly prisma: PrismaService,
     @InjectModel(Message.name) private readonly messageModel: Model<Message>,
-    private readonly messagesGateway: ChatGateway,
-  ) {}
+    private readonly redisService: RedisService,
+  ) {
+    this.redis = this.redisService.getOrThrow()
+  }
 
   async create(body: CreateMessageDto) {
-    // TODO: verificar se o chat id existe??
     let chatId = body.chatId
+    const redisKey = `chatId:${body.friendshipId}`
 
     if (!chatId) {
-      // TODO: validação de segurança
-      const chatExists = await this.prisma.chat.findFirst({
-        where: {
-          friendshipId: body.friendshipId,
-        },
-      })
+      const cachedChatId = await this.redis.get(redisKey)
 
-      if (!chatExists) {
-        const friendshipExists = await this.prisma.friendship.findUnique({
+      if (cachedChatId) {
+        chatId = Number(cachedChatId)
+      } else {
+        const chatExists = await this.prisma.chat.findFirst({
           where: {
-            id: body.friendshipId,
-          },
-        })
-
-        if (!friendshipExists) {
-          throw new NotFoundException('Friendship not found')
-        }
-
-        const chatCreated = await this.prisma.chat.create({
-          data: {
-            available: true,
             friendshipId: body.friendshipId,
           },
         })
-        chatId = chatCreated.id
-        return
-      }
 
-      if (!chatExists.available) {
-        throw new ForbiddenException('User can not send messages on this chat')
-      }
+        if (!chatExists) {
+          const friendshipExists = await this.prisma.friendship.findUnique({
+            where: {
+              id: body.friendshipId,
+            },
+          })
 
-      chatId = chatExists.id
+          if (!friendshipExists) {
+            throw new NotFoundException('Friendship not found')
+          }
+
+          const chatCreated = await this.prisma.chat.create({
+            data: {
+              available: true,
+              friendshipId: body.friendshipId,
+            },
+          })
+
+          chatId = chatCreated.id
+          await this.redis.set(redisKey, chatId)
+          return
+        }
+
+        if (!chatExists.available) {
+          throw new ForbiddenException('User can not send messages on this chat')
+        }
+
+        chatId = chatExists.id
+
+        await this.redis.set(redisKey, chatId)
+      }
     }
 
     const message = new this.messageModel({
