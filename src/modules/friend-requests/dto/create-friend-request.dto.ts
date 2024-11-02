@@ -3,14 +3,14 @@ import { IsInt, IsNotEmpty } from 'class-validator'
 
 export class CreateFriendRequestDto {
   @ApiProperty({
-    type: Number
+    type: Number,
   })
   @IsInt()
   @IsNotEmpty()
   senderId: number
-  
+
   @ApiProperty({
-    type: Number
+    type: Number,
   })
   @IsInt()
   @IsNotEmpty()

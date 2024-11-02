@@ -1,15 +1,15 @@
 
 ###
 # @name get_users
-GET http://localhost:3000/users/8
+GET http://localhost:3333/users/8
 
 ###
 # @name get_user_friends
-GET http://localhost:3000/users/friends/8
+GET http://localhost:3333/users/friends/8
 
 ###
 # @name create_friend_request
-POST http://localhost:3000/friend-request
+POST http://localhost:3333/friend-request
 Content-Type: application/json
 
 {
@@ -19,19 +19,44 @@ Content-Type: application/json
 
 ###
 # @name get_pending_friend_requests
-GET http://localhost:3000/friend-request/pending/8
+GET http://localhost:3333/friend-request/pending/8
 
 ###
 # @name accept_a_friend_request
-PATCH http://localhost:3000/friend-request/accept/8
+PATCH http://localhost:3333/friend-request/accept/8
 Content-Type: application/json
 
 
 ###
 # @name reject_a_friend_request
-PATCH http://localhost:3000/friend-request/reject/7
+PATCH http://localhost:3333/friend-request/reject/7
 Content-Type: application/json
 
 ###
 # @name get_my_friends
-GET http://localhost:3000/friendships/me/8
+GET http://localhost:3333/friendships/me/8
+
+
+###
+# @name get_messages_by_chat
+GET http://localhost:3333/messages/?chatId=1
+
+
+###
+# @name send_message
+POST http://localhost:3333/messages
+Content-Type: application/json
+
+{
+    "senderId": 8,
+    "receiverId": 7,
+    "friendshipId": 4,
+    "chatId": null,
+    "textMessage": "nada nao"
+
+}
+
+
+###
+# @name read_messages_sent_to_me_by_chat
+PATCH http://localhost:3333/messages/read/?chatId=1

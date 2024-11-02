@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { UpdateFriendshipDto } from './dto/update-friendship.dto'
 import { PrismaService } from 'src/prisma.service'
 
@@ -77,7 +77,24 @@ export class FriendshipsService {
     return `This action updates a #${id} friendship`
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} friendship`
+  async remove(id: number) {
+    // TODO: pegar o id do user do token para verificar se o id dele contem na friendship, para garantir
+    const friendship = await this.prisma.friendship.findUnique({
+      where: {
+        id,
+      },
+    })
+
+    if (!friendship) {
+      throw new NotFoundException('Friendship not found')
+    }
+
+    await this.prisma.friendship.delete({
+      where: {
+        id,
+      },
+    })
+
+    // return `This action removes a #${id} friendship`
   }
 }

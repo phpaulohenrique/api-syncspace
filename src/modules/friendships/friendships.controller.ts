@@ -1,4 +1,4 @@
-import { Controller, Get, Body, Patch, Param, Delete } from '@nestjs/common'
+import { Controller, Get, Body, Patch, Param, Delete, Query } from '@nestjs/common'
 import { FriendshipsService } from './friendships.service'
 import { UpdateFriendshipDto } from './dto/update-friendship.dto'
 

@@ -27,9 +27,20 @@ Esta API permite a gestão de usuários, solicitações de amizade e relacioname
 
 [x] Listar todos os amigos de um usuário.
 
-[ ] Remover uma amizade existente.
+[x] Remover uma amizade existente.
 
 [x] Garantir que uma amizade só pode existir entre dois usuários que tenham aceitado uma solicitação de amizade.
+
+### 4. Conversas por Mensagem entre Amigos
+
+- **Enviar Mensagem**: Um usuário pode enviar uma mensagem para outro usuário que esteja na sua lista de amigos.
+- **Listar Conversas**: Listar todas as mensagens trocadas entre dois amigos, ordenadas por data.
+- **Status de Mensagem**: Implementar o status de leitura para cada mensagem (`LIDA` ou `NÃO_LIDA`).
+- **Apagar Mensagem**: Permitir que um usuário apague uma mensagem enviada, removendo-a apenas de sua visão.
+- **Bloquear Mensagens**: Um usuário pode bloquear outro para impedir o recebimento de mensagens; mensagens bloqueadas não devem aparecer para o destinatário.
+
+### Mensagens entre Amigos
+
 
 ## Regras de Negócio
 
@@ -41,3 +52,14 @@ Esta API permite a gestão de usuários, solicitações de amizade e relacioname
 
 [x] Se uma solicitação de amizade for rejeitada, ela deve permanecer na tabela `FriendRequests` com o status `REJECTED`.
 
+[x] Apenas amigos podem trocar mensagens**: Somente usuários que já são amigos podem iniciar uma conversa por mensagem.
+
+[ ] Mensagem não duplicada**: Para evitar spam, um usuário não pode enviar a mesma mensagem para o mesmo amigo várias vezes seguidas sem uma resposta.
+
+[x] Tamanho da Mensagem**: Cada mensagem deve ter no máximo 500 caracteres para garantir legibilidade.
+
+[ ] Mensagem Expirada**: Mensagens podem ser automaticamente excluídas após 30 dias.
+
+[ ] Notificação de Leitura**: O status de leitura (`LIDA`) deve ser atualizado quando o destinatário visualizar a mensagem.
+
+[ ] Confidencialidade de Conversas**: Mensagens apagadas por um usuário não devem ser restauradas, mesmo se a outra parte ainda as tiver visíveis.

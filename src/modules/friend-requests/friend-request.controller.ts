@@ -1,19 +1,27 @@
 import { Controller, Get, Post, Body, Param, Delete, Patch } from '@nestjs/common'
 import { FriendRequestsService } from './friend-request.service'
 import { CreateFriendRequestDto } from './dto/create-friend-request.dto'
-import { ApiResponse, ApiBadRequestResponse, ApiNotFoundResponse } from '@nestjs/swagger'
+import {
+  ApiResponse,
+  ApiBadRequestResponse,
+  ApiNotFoundResponse,
+  ApiOperation,
+} from '@nestjs/swagger'
 
 @Controller('friend-requests')
 export class FriendRequestsController {
   constructor(private readonly friendRequestsService: FriendRequestsService) {}
 
   @Post()
-  @ApiResponse({status: 201, description: 'Resource successfully created.' })
-  @ApiBadRequestResponse({ 
-    description: 'Bad request error. Possible reasons include: User cannot send a friend request to yourself, Friend request already exists.' 
+  @ApiOperation({ summary: 'Create a new friend request' })
+  @ApiResponse({ status: 201, description: 'Resource successfully created.' })
+  @ApiBadRequestResponse({
+    description:
+      'Bad request error. Possible reasons include: User cannot send a friend request to yourself, Friend request already exists.',
   })
-  @ApiNotFoundResponse({ 
-    description: 'Not found error. Possible reasons include: SenderId not found, ReceiverId not found.' 
+  @ApiNotFoundResponse({
+    description:
+      'Not found error. Possible reasons include: SenderId not found, ReceiverId not found.',
   })
   create(@Body() createFriendRequestDto: CreateFriendRequestDto) {
     return this.friendRequestsService.create(createFriendRequestDto)
