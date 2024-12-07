@@ -5,6 +5,6 @@ import { ChatGateway } from './chat.gateway'
 
 @Module({
   // TODO: chat gateway here???
-  providers: [WebsocketService, ChatGateway],
+  providers: [WebsocketService],
 })
 export class WebsocketModule {}

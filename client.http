@@ -48,15 +48,19 @@ POST http://localhost:3333/messages
 Content-Type: application/json
 
 {
-    "senderId": 8,
-    "receiverId": 7,
+    "senderId": 7,
+    "receiverId": 8,
     "friendshipId": 4,
-    "chatId": null,
-    "textMessage": "pppppp"
-
+    "chatId": 1,
+    "textMessage": "eae"
 }
 
 
 ###
 # @name read_messages_sent_to_me_by_chat
 PATCH http://localhost:3333/messages/read/?chatId=1
+
+
+###
+# @name delete_message_by_id
+DELETE http://localhost:3333/messages/6727c6bb38240b699cd0d64a

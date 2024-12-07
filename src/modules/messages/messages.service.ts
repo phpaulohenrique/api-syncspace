@@ -66,10 +66,10 @@ export class MessagesService {
         }
 
         chatId = chatExists.id
-
-        await this.redis.set(redisKey, chatId)
       }
     }
+
+    await this.redis.set(redisKey, chatId)
 
     const message = new this.messageModel({
       chatId,
@@ -79,7 +79,7 @@ export class MessagesService {
     })
 
     await message.save()
-    this.messagesGateway.sendMessage(String(chatId), body.textMessage)
+    this.messagesGateway.sendMessage(String(chatId), message)
   }
 
   async findAllByChat(chatId: number) {
@@ -89,12 +89,13 @@ export class MessagesService {
 
     const formattedMessages = messages.map((msg) => ({
       id: msg._id,
-      textMessage: msg.content,
-      createdAt: msg.createdAt,
+      textMessage: msg.deletedAt instanceof Date ? null : msg.content,
       chatId: msg.chatId,
-      receiverId: msg?.receiverId,
-      senderId: msg?.senderId,
-      status: msg?.status,
+      receiverId: msg.receiverId,
+      senderId: msg.senderId,
+      status: msg.status,
+      createdAt: msg.createdAt,
+      deletedAt: msg.deletedAt,
     }))
 
     return {
@@ -124,7 +125,18 @@ export class MessagesService {
     // return `This action updates a #${chatId} message`
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} message`
+  async remove(id: string) {
+    // Verificar se a mensagem existe
+    const message = await this.messageModel.findOne({ _id: id })
+    if (!message) {
+      throw new NotFoundException(`Message not found`)
+    }
+
+    await this.messageModel.updateOne(
+      { _id: id },
+      { $set: { deletedAt: Date.now(), status: 'DELETED' } },
+    )
+
+    this.messagesGateway.deleteMessage(String(message.chatId), id)
   }
 }

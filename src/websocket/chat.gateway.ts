@@ -33,11 +33,22 @@ export class ChatGateway implements OnGatewayInit {
 
   @SubscribeMessage('joinChat')
   handleJoinChat(client: Socket, chatId: string) {
-    client.join(chatId) // O cliente se junta à sala correspondente ao chatId
+    client.join(chatId)
     console.log(`Client ${client.id} joined chat ${chatId}`)
   }
 
-  sendMessage(chatId: string, message: string) {
-    this.server.to(chatId).emit('message', message)
+  @SubscribeMessage('leaveChat')
+  handleLeaveChat(client: Socket, chatId: string) {
+    client.leave(chatId)
+    console.log(`Client ${client.id} left chat ${chatId}`)
+  }
+
+  sendMessage(chatId: string, message: object) {
+    // TODO: enviar objeto
+    this.server.to(chatId).emit('newMessage', message)
+  }
+
+  deleteMessage(chatId: string, messageId: string) {
+    this.server.to(chatId).emit('messageDeleted', messageId)
   }
 }
