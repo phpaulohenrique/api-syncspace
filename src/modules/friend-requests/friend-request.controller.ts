@@ -38,13 +38,13 @@ export class FriendRequestsController {
   // }
 
   @Patch('/accept/:id')
-  updateToAccept(@Param('id') id: string) {
-    return this.friendRequestsService.updateToAccepted(+id)
+  accept(@Param('id') id: string) {
+    return this.friendRequestsService.accept(+id)
   }
 
   @Patch('/reject/:id')
-  updateToRejected(@Param('id') id: string) {
-    return this.friendRequestsService.updateToRejected(+id)
+  reject(@Param('id') id: string) {
+    return this.friendRequestsService.reject(+id)
   }
 
   @Delete(':id')

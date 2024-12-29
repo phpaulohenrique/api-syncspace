@@ -1,17 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { FriendRequestController } from './friend-request.controller'
-import { FriendRequestService } from './friend-request.service'
+import { FriendRequestsController } from './friend-request.controller'
+import { FriendRequestsService } from './friend-request.service'
 
 describe('FriendRequestController', () => {
-  let controller: FriendRequestController
+  let controller: FriendRequestsController
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [FriendRequestController],
-      providers: [FriendRequestService],
+      controllers: [FriendRequestsController],
+      providers: [FriendRequestsService],
     }).compile()
 
-    controller = module.get<FriendRequestController>(FriendRequestController)
+    controller = module.get<FriendRequestsService>(FriendRequestsService)
   })
 
   it('should be defined', () => {

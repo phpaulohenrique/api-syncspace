@@ -1,6 +1,5 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
 import { CreateMessageDto } from './dto/create-message.dto'
-import { UpdateMessageDto } from './dto/update-message.dto'
 import { PrismaService } from 'src/prisma.service'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
@@ -8,6 +7,7 @@ import { Message } from './schemas/message.schema'
 import { ChatGateway } from 'src/websocket/chat.gateway'
 import { RedisService } from '@liaoliaots/nestjs-redis'
 import Redis from 'ioredis'
+import { convertMessageDocumentToMessageDTO } from './entities/message.entity'
 
 @Injectable()
 export class MessagesService {
@@ -23,8 +23,21 @@ export class MessagesService {
   }
 
   async create(body: CreateMessageDto) {
-    let chatId = body.chatId
+    const chatId = await this.handleChatIdResolution(body)
+    const message = new this.messageModel({
+      chatId,
+      content: body.content,
+      senderId: body.senderId,
+      receiverId: body.receiverId,
+    })
+
+    await message.save()
+    this.messagesGateway.sendMessage(String(chatId), convertMessageDocumentToMessageDTO(message))
+  }
+
+  private async handleChatIdResolution(body: CreateMessageDto): Promise<number> {
     const redisKey = `chatId:${body.friendshipId}`
+    let chatId = body.chatId
 
     if (!chatId) {
       const cachedChatId = await this.redis.get(redisKey)
@@ -58,7 +71,7 @@ export class MessagesService {
 
           chatId = chatCreated.id
           await this.redis.set(redisKey, chatId)
-          return
+          return chatId
         }
 
         if (!chatExists.available) {
@@ -70,16 +83,7 @@ export class MessagesService {
     }
 
     await this.redis.set(redisKey, chatId)
-
-    const message = new this.messageModel({
-      chatId,
-      content: body.textMessage,
-      senderId: body.senderId,
-      receiverId: body.receiverId,
-    })
-
-    await message.save()
-    this.messagesGateway.sendMessage(String(chatId), message)
+    return chatId
   }
 
   async findAllByChat(chatId: number) {
@@ -87,16 +91,7 @@ export class MessagesService {
 
     const messages = await this.messageModel.find({ chatId })
 
-    const formattedMessages = messages.map((msg) => ({
-      id: msg._id,
-      textMessage: msg.deletedAt instanceof Date ? null : msg.content,
-      chatId: msg.chatId,
-      receiverId: msg.receiverId,
-      senderId: msg.senderId,
-      status: msg.status,
-      createdAt: msg.createdAt,
-      deletedAt: msg.deletedAt,
-    }))
+    const formattedMessages = messages.map((msg) => convertMessageDocumentToMessageDTO(msg))
 
     return {
       data: {
@@ -111,22 +106,32 @@ export class MessagesService {
 
   async updateMessagesToRead(chatId: number) {
     // TODO: GET CURRENT USER FROM TOKEN
+    // TODO: QUEM VAI CHAMAR ESSA ROTA É QM ESTÁ LENDO A MSG
 
-    const userIdReading = 7
+    const userIdReading = 2
 
     await this.messageModel.updateMany(
       {
         receiverId: userIdReading,
         chatId,
       },
-      { $set: { status: 'READ' } }, // Atualiza o campo 'status' para 'READ'
+      { $set: { status: 'READ' } },
     )
 
-    // return `This action updates a #${chatId} message`
+    const updatedMessages = await this.messageModel
+      .find({
+        receiverId: userIdReading,
+        chatId,
+        status: 'READ',
+      })
+      .exec()
+
+    const messages = updatedMessages.map((msg) => convertMessageDocumentToMessageDTO(msg))
+
+    this.messagesGateway.readMessage(String(chatId), messages)
   }
 
   async remove(id: string) {
-    // Verificar se a mensagem existe
     const message = await this.messageModel.findOne({ _id: id })
     if (!message) {
       throw new NotFoundException(`Message not found`)

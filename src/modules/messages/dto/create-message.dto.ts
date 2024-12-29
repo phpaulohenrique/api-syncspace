@@ -20,5 +20,5 @@ export class CreateMessageDto {
   @IsNotEmpty()
   @IsString()
   @MaxLength(500)
-  textMessage: string
+  content: string
 }

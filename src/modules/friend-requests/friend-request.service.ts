@@ -78,38 +78,39 @@ export class FriendRequestsService {
       },
     })
     return {
-      pending_requests: pendingRequests,
+      data: {
+        pending_requests: pendingRequests,
+      },
     }
   }
 
-  async updateToAccepted(id: number) {
+  async accept(id: number) {
     // TODO: verificar pelo token se quem está disparando essa rota é o receiverId
 
-    try {
-      await this.prisma.$transaction(async (prisma) => {
-        const friendRequest = await prisma.friendRequest.findUnique({
-          where: { id },
-          select: { receiverId: true, senderId: true, id: true },
-        })
+    const friendRequest = await this.prisma.friendRequest.findUnique({
+      where: { id },
+      select: { receiverId: true, senderId: true, id: true },
+    })
 
-        await prisma.friendship.create({
-          data: {
-            userIdInitiated: friendRequest.senderId,
-            userIdReceived: friendRequest.receiverId,
-          },
-        })
-
-        await prisma.friendRequest.delete({
-          where: { id: friendRequest.id },
-        })
-      })
-    } catch (error) {
-      console.error('Error processing friend accept:', error)
-      throw new Error('Unable to process the friend request')
+    if (!friendRequest) {
+      throw new NotFoundException('FriendRequest not found')
     }
+
+    await this.prisma.$transaction(async (prisma) => {
+      await prisma.friendship.create({
+        data: {
+          userIdInitiated: friendRequest.senderId,
+          userIdReceived: friendRequest.receiverId,
+        },
+      })
+
+      await prisma.friendRequest.delete({
+        where: { id: friendRequest.id },
+      })
+    })
   }
 
-  async updateToRejected(id: number) {
+  async reject(id: number) {
     // TODO: verificar pelo token se quem esta disparando essa rota é o receiverID
     await this.prisma.friendRequest.update({
       where: {

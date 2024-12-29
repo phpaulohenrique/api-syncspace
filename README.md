@@ -1,65 +1,69 @@
 # SyncSpace API
 
-## Visão Geral
+## Overview
 
-Esta API permite a gestão de usuários, solicitações de amizade e relacionamentos de amizade. As principais funcionalidades incluem criação de usuários, envio e gestão de solicitações de amizade, e gerenciamento de amizades confirmadas.
+This API enables the management of users, friend requests, and friendships. Key functionalities include user creation, sending and managing friend requests, and handling confirmed friendships.
 
-## Funcionalidades
+## Features
 
-### 1. Gerenciamento de Usuários
+### 1. User Management
 
-- Criar, atualizar, listar e remover usuários.
-- Cada usuário deve ter um email único.
+- Create, update, list, and delete users.
+- Each user must have a unique email.
 
-### 2. Solicitações de Amizade
+### 2. Friend Requests
 
-[x] Enviar uma solicitação de amizade de um usuário para outro.
+[x] Send a friend request from one user to another.
 
-[x] Listar todas as solicitações de amizade pendentes de um usuário.
+[x] List all pending friend requests for a user.
 
-[x] Aceitar ou rejeitar solicitações de amizade.
+[x] Accept or reject friend requests.
 
-[x] Impedir que um usuário envie uma solicitação para si mesmo ou envie múltiplas solicitações pendentes para o mesmo usuário.
+[x] Prevent users from sending a friend request to themselves or sending multiple pending requests to the same user.
 
-### 3. Gerenciamento de Amizades
+### 3. Friendship Management
 
-[x] Converter uma solicitação de amizade aceita em uma amizade.
+[x] Convert an accepted friend request into a friendship.
 
-[x] Listar todos os amigos de um usuário.
+[x] List all friends of a user.
 
-[x] Remover uma amizade existente.
+[x] Remove an existing friendship.
 
-[x] Garantir que uma amizade só pode existir entre dois usuários que tenham aceitado uma solicitação de amizade.
+[x] Ensure that a friendship can only exist between two users who have accepted a friend request.
 
-### 4. Conversas por Mensagem entre Amigos
+### 4. Messaging Between Friends
 
-- **Enviar Mensagem**: Um usuário pode enviar uma mensagem para outro usuário que esteja na sua lista de amigos.
-- **Listar Conversas**: Listar todas as mensagens trocadas entre dois amigos, ordenadas por data.
-- **Status de Mensagem**: Implementar o status de leitura para cada mensagem (`LIDA` ou `NÃO_LIDA`).
-- **Apagar Mensagem**: Permitir que um usuário apague uma mensagem enviada, removendo-a apenas de sua visão.
-- **Bloquear Mensagens**: Um usuário pode bloquear outro para impedir o recebimento de mensagens; mensagens bloqueadas não devem aparecer para o destinatário.
+- **Send Message**: A user can send a message to another user in their friends list.
+- **List Conversations**: List all messages exchanged between two friends, sorted by date.
+- **Message Status**: Implement read status for each message (`READ` or `UNREAD`).
+- **Delete Message**: Allow a user to delete a sent message, removing it only from their view.
 
-### Mensagens entre Amigos
+## Business Rules / Feat
 
+[x] A user cannot send a friend request to themselves.
 
-## Regras de Negócio
+[x] There cannot be more than one pending friend request between two users.
 
-[x] Um usuário não pode enviar uma solicitação de amizade para si mesmo.
+[x] When a friend request is accepted, it must be removed from the `FriendRequests` table, and a friendship must be created in the `Friendships` table.
 
-[x] Não pode haver mais de uma solicitação de amizade pendente entre dois usuários.
+[x] If a friend request is rejected, it must remain in the `FriendRequests` table with the status `REJECTED`.
 
-[x] Quando uma solicitação de amizade é aceita, ela deve ser removida da tabela `FriendRequests` e a amizade deve ser criada na tabela `Friendships`.
+[x] **Only friends can exchange messages**: Only users who are friends can start a message conversation.
 
-[x] Se uma solicitação de amizade for rejeitada, ela deve permanecer na tabela `FriendRequests` com o status `REJECTED`.
+[x] **Message Length**: Each message must have a maximum of 500 characters to ensure readability.
 
-[x] Apenas amigos podem trocar mensagens**: Somente usuários que já são amigos podem iniciar uma conversa por mensagem.
+[x] **Read Notification**: The read status (`READ`) must be updated when the recipient views the message.
 
-[ ] Mensagem não duplicada**: Para evitar spam, um usuário não pode enviar a mesma mensagem para o mesmo amigo várias vezes seguidas sem uma resposta.
+[x] **Conversation Confidentiality**: Deleted messages by a user should not be restored, even if the other party still has them visible.
 
-[x] Tamanho da Mensagem**: Cada mensagem deve ter no máximo 500 caracteres para garantir legibilidade.
+[] Send images (S3)
 
-[ ] Mensagem Expirada**: Mensagens podem ser automaticamente excluídas após 30 dias.
+[] Auth with JWT token
 
-[ ] Notificação de Leitura**: O status de leitura (`LIDA`) deve ser atualizado quando o destinatário visualizar a mensagem.
+[] Repository pattern
 
-[ ] Confidencialidade de Conversas**: Mensagens apagadas por um usuário não devem ser restauradas, mesmo se a outra parte ainda as tiver visíveis.
+[] Refactor
+
+[] Change ids to use UUID
+
+[] Add Tests

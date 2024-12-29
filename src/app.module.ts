@@ -4,10 +4,11 @@ import { AppService } from './app.service'
 import { UsersModule } from './modules/users/users.module'
 import { FriendRequestModule } from './modules/friend-requests/friend-request.module'
 import { FriendshipsModule } from './modules/friendships/friendships.module'
-import { ChatsModule } from './modules/chats/chats.module'
+
 import { WebsocketModule } from './websocket/websocket.module'
 import { MongooseModule } from '@nestjs/mongoose'
 import { RedisModule } from '@liaoliaots/nestjs-redis'
+import { MessagesModule } from './modules/messages/messages.module'
 
 @Module({
   imports: [
@@ -22,8 +23,8 @@ import { RedisModule } from '@liaoliaots/nestjs-redis'
     UsersModule,
     FriendRequestModule,
     FriendshipsModule,
-    ChatsModule,
     WebsocketModule,
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -64,8 +64,10 @@ export class FriendshipsService {
     )
 
     return {
-      user,
-      friends,
+      data: {
+        user,
+        friends,
+      },
     }
   }
 
