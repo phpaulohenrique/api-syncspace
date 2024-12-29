@@ -30,7 +30,7 @@ async function bootstrap() {
     }),
   )
 
-  const appPort = Number(process.env.APP_PORT || 3334)
+  const appPort = Number(process.env.APP_PORT || 3333)
 
   await app.listen(appPort)
   console.log(`HTTP Server running on port ${appPort} 🌐`)

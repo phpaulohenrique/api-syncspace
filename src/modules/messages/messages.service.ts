@@ -8,6 +8,9 @@ import { ChatGateway } from 'src/websocket/chat.gateway'
 import { RedisService } from '@liaoliaots/nestjs-redis'
 import Redis from 'ioredis'
 import { convertMessageDocumentToMessageDTO } from './entities/message.entity'
+import { LogEvent, LogService } from 'src/log.service'
+// import { InjectRedis } from '@nestjs-modules/ioredis'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 
 @Injectable()
 export class MessagesService {
@@ -16,8 +19,11 @@ export class MessagesService {
   constructor(
     private readonly messagesGateway: ChatGateway,
     private readonly prisma: PrismaService,
+    private readonly eventEmitter: EventEmitter2,
     @InjectModel(Message.name) private readonly messageModel: Model<Message>,
     private readonly redisService: RedisService,
+    // private readonly logService: LogService,
+    // @InjectRedis() private readonly redis: Redis, // Injeção direta
   ) {
     this.redis = this.redisService.getOrThrow()
   }
@@ -33,6 +39,13 @@ export class MessagesService {
 
     await message.save()
     this.messagesGateway.sendMessage(String(chatId), convertMessageDocumentToMessageDTO(message))
+    this.eventEmitter.emit(
+      'log.created',
+      new LogEvent(
+        'msg_logs',
+        `user_id: ${body.senderId} sent a message to user_id: ${body.receiverId}`,
+      ),
+    )
   }
 
   private async handleChatIdResolution(body: CreateMessageDto): Promise<number> {

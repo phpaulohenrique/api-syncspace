@@ -9,9 +9,12 @@ import { WebsocketModule } from './websocket/websocket.module'
 import { MongooseModule } from '@nestjs/mongoose'
 import { RedisModule } from '@liaoliaots/nestjs-redis'
 import { MessagesModule } from './modules/messages/messages.module'
+import { EventEmitterModule } from '@nestjs/event-emitter'
+// import { RedisModule } from '@nestjs-modules/ioredis'
 
 @Module({
   imports: [
+    EventEmitterModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGODB_URL),
     RedisModule.forRoot({
       config: {

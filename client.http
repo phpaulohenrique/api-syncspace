@@ -52,7 +52,7 @@ Content-Type: application/json
     "receiverId": 1,
     "friendshipId": 1,
     "chatId": 1,
-    "content": "teste?"
+    "content": "q?"
 }
 
 
