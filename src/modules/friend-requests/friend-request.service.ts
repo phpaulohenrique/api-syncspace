@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { CreateFriendRequestDto } from './dto/create-friend-request.dto'
-import { PrismaService } from 'src/prisma.service'
+import { PrismaService } from '../../prisma.service'
 import { FriendRequestStatus } from '@prisma/client'
 
 @Injectable()
 export class FriendRequestsService {
   constructor(private readonly prisma: PrismaService) {}
   async create(body: CreateFriendRequestDto) {
-    if (body.receiverId === body.senderId) {
+    if (Number(body.receiverId) === Number(body.senderId)) {
       throw new BadRequestException('User cannot send a friend request to yourself')
     }
 
@@ -27,33 +27,27 @@ export class FriendRequestsService {
       },
     })
 
+    if (!sender) {
+      throw new NotFoundException('SenderId not found')
+    }
+
     const receiver = await this.prisma.user.findUnique({
       where: {
         id: body.receiverId,
       },
     })
 
-    if (!sender) {
-      throw new NotFoundException('SenderId not found')
-    }
-
     if (!receiver) {
       throw new NotFoundException('ReceiverId not found')
     }
 
-    await this.prisma.friendRequest.create({
+    return await this.prisma.friendRequest.create({
       data: {
         receiverId: body.receiverId,
         senderId: body.senderId,
         status: FriendRequestStatus.PENDING,
       },
-      // include: {
-      //   receiver: true,
-      //   sender: true,
-      // },
     })
-
-    // return friendRequest;
   }
 
   async findAllPending(userId: number) {
