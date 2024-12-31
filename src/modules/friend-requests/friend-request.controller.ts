@@ -47,8 +47,8 @@ export class FriendRequestsController {
     return this.friendRequestsService.reject(+id)
   }
 
-  @Delete(':id')
+  /*  @Delete(':id')
   remove(@Param('id') id: string) {
     return this.friendRequestsService.remove(+id)
-  }
+  } */
 }

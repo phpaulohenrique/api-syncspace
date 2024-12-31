@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
-import { PrismaService } from 'src/prisma.service'
+import { PrismaService } from '../../prisma.service'
 
 @Injectable()
 export class UsersService {
@@ -57,7 +57,7 @@ export class UsersService {
       }
     })
 
-    return { users: usersWithFriendStatus }
+    return { data: { users: usersWithFriendStatus } }
   }
 
   async findAllFriends(userId: number) {
@@ -88,7 +88,7 @@ export class UsersService {
       },
     })
 
-    return { users: friends }
+    return { data: { users: friends } }
   }
 
   findOne(id: number) {
