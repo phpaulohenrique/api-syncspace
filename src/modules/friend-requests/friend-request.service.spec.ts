@@ -75,12 +75,7 @@ describe('FriendRequestService', () => {
         .mockResolvedValueOnce(user1Mock)
         .mockResolvedValueOnce(user2Mock)
 
-      prismaService.friendRequest.create = jest.fn().mockResolvedValue({
-        id: 1,
-        senderId: 1,
-        receiverId: 2,
-        status: FriendRequestStatus.PENDING,
-      })
+      prismaService.friendRequest.create = jest.fn().mockResolvedValue(friendRequestPendingMock)
 
       const result = await service.create(createFriendRequestBodyMock)
 
@@ -145,6 +140,20 @@ describe('FriendRequestService', () => {
       })
 
       expect(prismaService.user.findUnique).toHaveBeenCalledTimes(2)
+    })
+
+    it('should throw an exception', async () => {
+      prismaService.friendRequest.findFirst = jest.fn().mockResolvedValue(null)
+      prismaService.user.findUnique = jest
+        .fn()
+        .mockResolvedValueOnce(user1Mock)
+        .mockResolvedValueOnce(user2Mock)
+
+      jest
+        .spyOn(prismaService.friendRequest, 'create')
+        .mockRejectedValueOnce(new Error('Simulated error'))
+
+      expect(service.create(createFriendRequestBodyMock)).rejects.toThrowError()
     })
   })
 
