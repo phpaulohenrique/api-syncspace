@@ -106,17 +106,19 @@ export class FriendRequestsService {
 
   async reject(id: number) {
     // TODO: verificar pelo token se quem esta disparando essa rota é o receiverID
-    await this.prisma.friendRequest.update({
+
+    const friendRequest = await this.prisma.friendRequest.findUnique({
+      where: { id },
+    })
+
+    if (!friendRequest) {
+      throw new NotFoundException('FriendRequest not found')
+    }
+
+    await this.prisma.friendRequest.delete({
       where: {
         id,
       },
-      data: {
-        status: 'REJECTED',
-      },
     })
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} friendRequest`
   }
 }
