@@ -32,11 +32,6 @@ export class FriendRequestsController {
     return this.friendRequestsService.findAllPending(+id)
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.friendRequestsService.findOne(+id);
-  // }
-
   @Patch('/accept/:id')
   accept(@Param('id') id: string) {
     return this.friendRequestsService.accept(+id)
@@ -46,9 +41,4 @@ export class FriendRequestsController {
   reject(@Param('id') id: string) {
     return this.friendRequestsService.reject(+id)
   }
-
-  /*  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.friendRequestsService.remove(+id)
-  } */
 }

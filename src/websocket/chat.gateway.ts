@@ -5,7 +5,7 @@ import {
   OnGatewayInit,
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
-import { IMessage } from 'src/modules/messages/entities/message.entity'
+import { IMessage } from '../modules/messages/entities/message.entity'
 
 // const WEBSOCKET_PORT = Number(process.env.WEBSOCKET_PORT)
 

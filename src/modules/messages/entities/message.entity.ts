@@ -1,4 +1,4 @@
-import { MessageStatus } from 'src/enum/message-status.enum'
+import { MessageStatus } from '@/enum/message-status.enum'
 import { MessageDocument } from '../schemas/message.schema'
 
 export interface IMessage {
