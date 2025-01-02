@@ -41,13 +41,17 @@ export class FriendRequestsService {
       throw new NotFoundException('ReceiverId not found')
     }
 
-    return await this.prisma.friendRequest.create({
+    const friendRequest = await this.prisma.friendRequest.create({
       data: {
         receiverId: body.receiverId,
         senderId: body.senderId,
         status: FriendRequestStatus.PENDING,
       },
     })
+
+    return {
+      data: friendRequest,
+    }
   }
 
   async findAllPending(userId: number) {
@@ -73,7 +77,7 @@ export class FriendRequestsService {
     })
     return {
       data: {
-        pending_requests: pendingRequests,
+        pendingRequests,
       },
     }
   }

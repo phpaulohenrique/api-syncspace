@@ -5,8 +5,8 @@ import { PrismaService } from '../../prisma.service'
 import { MongooseModule } from '@nestjs/mongoose'
 
 import { Message, MessageSchema } from './schemas/message.schema'
-import { ChatGateway } from 'src/websocket/chat.gateway'
-import { LogService } from 'src/log.service'
+import { ChatGateway } from '../../websocket/chat.gateway'
+import { LogService } from '../../log.service'
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: Message.name, schema: MessageSchema }])],
