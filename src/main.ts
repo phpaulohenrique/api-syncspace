@@ -10,6 +10,8 @@ async function bootstrap() {
     logger: ['error', 'warn'],
   })
 
+  app.useGlobalPipes(new ValidationPipe())
+
   const config = new DocumentBuilder()
     .setTitle('API SyncSpace')
     .setDescription('API SyncSpace description')
@@ -20,15 +22,6 @@ async function bootstrap() {
   SwaggerModule.setup('swagger', app, document)
 
   app.use('/docs', express.static(join(__dirname, '..', 'public')))
-
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      errorHttpStatusCode: 422,
-    }),
-  )
 
   const appPort = Number(process.env.APP_PORT || 3333)
 

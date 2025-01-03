@@ -187,10 +187,9 @@ describe('FriendRequestService', () => {
       })
 
       expect(result).toHaveProperty('data')
-      expect(result.data).toHaveProperty('pendingRequests')
-      expect(result.data.pendingRequests).toHaveLength(2)
-      expect(Array.isArray(result.data.pendingRequests)).toBe(true)
-      expect(result.data.pendingRequests[0]).toEqual(
+      expect(result.data).toHaveLength(2)
+      expect(Array.isArray(result.data)).toBe(true)
+      expect(result.data[0]).toEqual(
         expect.objectContaining({
           id: expect.any(Number),
           createdAt: expect.any(Date),
@@ -202,12 +201,6 @@ describe('FriendRequestService', () => {
           }),
         }),
       )
-
-      expect(result).toEqual({
-        data: {
-          pendingRequests: pendingRequestsMock,
-        },
-      })
     })
   })
 
