@@ -76,9 +76,7 @@ export class FriendRequestsService {
       },
     })
     return {
-      data: {
-        pendingRequests,
-      },
+      data: [...pendingRequests],
     }
   }
 

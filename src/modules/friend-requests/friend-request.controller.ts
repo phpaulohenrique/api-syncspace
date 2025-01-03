@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Patch } from '@nestjs/common'
+import { Controller, Get, Post, Body, Param, Delete, Patch, ValidationPipe } from '@nestjs/common'
 import { FriendRequestsService } from './friend-request.service'
 import { CreateFriendRequestDto } from './dto/create-friend-request.dto'
 import {
